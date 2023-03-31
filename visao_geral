@@ -1,0 +1,77 @@
+//
+O serviço IAM da AWS é usado para gerenciar usuários e permissões em uma conta AWS.
+As políticas de acesso do IAM permitem controlar o acesso a recursos da AWS, como instâncias EC2, buckets S3 e tabelas do DynamoDB. 
+O módulo boto3 do Python pode ser usado para interagir com o IAM da AWS e gerenciar usuários e políticas de acesso.
+Configurando o ambiente
+
+Antes de começarmos, precisamos configurar nosso ambiente para usar o módulo boto3. 
+O primeiro passo é instalar o módulo usando o gerenciador de pacotes pip. Abra o terminal e execute o seguinte comando:
+
+pip install boto3
+
+Em seguida, precisamos configurar nossas credenciais da AWS. É possível fazer isso criando um arquivo ~/.aws/credentials com as credenciais da sua conta.
+O arquivo deve ter o seguinte formato:
+
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY
+aws_secret_access_key = YOUR_SECRET_KEY
+
+Substitua YOUR_ACCESS_KEY e YOUR_SECRET_KEY com as suas credenciais da AWS.
+
+Criando um usuário do IAM
+
+Para interagir com o IAM da AWS usando o módulo boto3, precisamos criar um objeto IAM que represente o serviço IAM.
+Podemos fazer isso com o seguinte código:
+
+import boto3
+
+iam = boto3.client('iam')
+
+Agora que temos um objeto IAM, podemos criar um usuário do IAM usando a função create_user().
+O seguinte código cria um usuário com o nome johndoe:
+
+response = iam.create_user(
+    UserName='johndoe'
+)
+A função create_user() retorna um dicionário com informações sobre o usuário criado, incluindo o ID do usuário.
+
+Criando uma política de acesso
+
+Uma política de acesso do IAM define as permissões que um usuário tem para acessar recursos da AWS. 
+Podemos criar uma nova política de acesso usando a função create_policy(). 
+O seguinte código cria uma política de acesso que permite o acesso total a uma tabela do DynamoDB:
+
+policy_document = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:*"
+            ],
+            "Resource": "arn:aws:dynamodb:REGION:ACCOUNT_ID:table/TABLE_NAME"
+        }
+    ]
+}
+
+policy = json.dumps(policy_document)
+
+response = iam.create_policy(
+    PolicyName='dynamodb-full-access',
+    PolicyDocument=policy
+)
+
+O parâmetro PolicyName define o nome da política, e o parâmetro PolicyDocument define o documento da política de acesso. 
+No exemplo acima, a política permite o acesso total a uma tabela do DynamoDB na região REGION e conta AWS ACCOUNT_ID.
+
+Anexando uma política de acesso a um usuário
+
+Agora que criamos uma política de acesso, podemos anexá-la a um usuário usando a função attach_user_policy().
+O seguinte código anexa a política de acesso criada anteriormente ao usuário johndoe:
+
+response = iam.attach_user_policy(
+
+
+
+
+

@@ -1,0 +1,45 @@
+import boto3
+
+# Criando o cliente IAM
+client = boto3.client('iam')
+
+# Criando a política
+policy_name = 'allow_s3_access'
+policy_document = {
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        }
+    ]
+}
+response = client.create_policy(
+    PolicyName=policy_name,
+    PolicyDocument=str(policy_document)
+)
+
+# Obtendo o ARN da política recém-criada
+policy_arn = response['Policy']['Arn']
+
+# Criando o usuário IAM
+user_name = 'myuser'
+response = client.create_user(
+    UserName=user_name
+)
+
+# Obtendo o nome de usuário do usuário IAM recém-criado
+user_name = response['User']['UserName']
+
+# Anexando a política ao usuário IAM
+response = client.attach_user_policy(
+    UserName=user_name,
+    PolicyArn=policy_arn
+)
+
+# Listando as políticas anexadas ao usuário IAM
+response = client.list_attached_user_policies(
+    UserName=user_name
+)
+print(response['AttachedPolicies'])
